@@ -14,17 +14,18 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/appointment', name: 'api_appointment')]
 class AppointmentController extends AbstractController
 {
-    private $entityManager;
-    private $validator;
 
-    public function __construct(ManagerRegistry $doctrine, ValidatorInterface $validator) {
-        $this->entityManager = $doctrine->getManager();
-        $this->validator = $validator;
+    public function __construct(private ManagerRegistry $doctrine, private ValidatorInterface $validator)
+    {
+
     }
 
     #[Route('/create', name: 'api_appointment_create', methods: "POST")]
     public function create(Request $request): Response
     {
+
+        // TODO: appointments can be reserved in every 30minutes!
+        // TODO: it can be only the future date
         $date = $request->request->get('date');
 
         $appointment = new Appointment();
@@ -40,9 +41,33 @@ class AppointmentController extends AbstractController
             return new Response($errorsString);
         }
 
-        $this->entityManager->persist($appointment);
-        $this->entityManager->flush();
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($appointment);
+        $entityManager->flush();
 
         return new Response('Saved new appointment with id ' . $appointment->getId(), 201);
+    }
+
+    #[Route('/read', name: 'api_appointment_read', methods: "GET")]
+    public function read(): Response
+    {
+        // TODO: find by day (date param)
+        $appointments = $this->doctrine
+            ->getRepository(Appointment::class)
+            ->findBy(['status' => 'RESERVED']);
+
+        $appointmentsArray = array();
+
+        foreach($appointments as $appointment) {
+            $appointmentsArray[] = array(
+                'id' => $appointment->getId(),
+                'date' => $appointment->getDate(),
+            );
+        }
+        
+        return $this->json(
+            $appointmentsArray,
+            headers: ['Content-Type' => 'application/json;charset=UTF-8']
+        );
     }
 }

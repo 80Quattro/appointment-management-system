@@ -51,4 +51,9 @@ class Appointment
 
         return $this;
     }
+
+    public function toArray()
+    {
+        return ['id' => $this->id, 'date' => $this->date, 'status' => $this->status];
+    }
 }
