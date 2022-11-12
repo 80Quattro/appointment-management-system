@@ -56,6 +56,10 @@ class AppointmentController extends AbstractController
             ->getRepository(Appointment::class)
             ->findBy(['status' => 'RESERVED']);
 
+        if(count($appointments) === 0) {
+            return new Response('Nothing found', 404);
+        }
+
         $appointmentsArray = array();
 
         foreach($appointments as $appointment) {
