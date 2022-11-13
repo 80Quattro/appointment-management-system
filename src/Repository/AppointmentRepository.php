@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Appointment;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,22 @@ class AppointmentRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByDate(DateTime $date) {
+        
+        $date->setTime(0,0,0);
+        
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.date BETWEEN :date AND :date2')
+            ->setParameter('date', $date->format('Y-m-d H:i:s'))
+            ->setParameter('date2', $date->modify('+1 day')->format('Y-m-d H:i:s'))
+            ->andWhere('a.status = :status')
+            ->setParameter('status', 'RESERVED');
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
     }
 
 //    /**

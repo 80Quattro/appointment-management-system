@@ -48,13 +48,15 @@ class AppointmentController extends AbstractController
         return new Response('Saved new appointment with id ' . $appointment->getId(), 201);
     }
 
-    #[Route('/read', name: 'api_appointment_read', methods: "GET")]
-    public function read(): Response
+    #[Route('/read/{date}', name: 'api_appointment_read', methods: "GET")]
+    public function read($date): Response
     {
-        // TODO: find by day (date param)
+        $date = \DateTime::createFromFormat('d.m.Y', $date);
+        $date->setTime(0,0,0);
+
         $appointments = $this->doctrine
             ->getRepository(Appointment::class)
-            ->findBy(['status' => 'RESERVED']);
+            ->findByDate($date);
 
         if(count($appointments) === 0) {
             return new Response('Nothing found', 404);
@@ -70,8 +72,7 @@ class AppointmentController extends AbstractController
         }
         
         return $this->json(
-            $appointmentsArray,
-            headers: ['Content-Type' => 'application/json;charset=UTF-8']
+            $appointmentsArray
         );
     }
 }
