@@ -6,6 +6,7 @@ use App\Entity\Appointment;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * @extends ServiceEntityRepository<Appointment>
@@ -40,7 +41,8 @@ class AppointmentRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByDate(DateTime $date) {
+    public function findByDay(DateTime $date): array 
+    {
         
         $date->setTime(0,0,0);
         
@@ -54,6 +56,29 @@ class AppointmentRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
 
         return $query->execute();
+    }
+
+    public function isAvailable(DateTime $date): bool
+    {
+        // appointment can be reserved in every 30min
+        $min = $date->format('i');
+        if($min != "00" && $min != "30") {
+            return false;
+        }
+
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.date = :date')
+            ->setParameter('date', $date);
+        
+        $query = $qb->getQuery();
+        $result = $query->execute();
+        // only one appointment can be reserved at the same time
+        if(count($result) === 0) {
+            return true;
+        }
+
+        return false;
+
     }
 
 //    /**

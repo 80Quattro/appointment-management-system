@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Appointment;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,13 +22,19 @@ class AppointmentController extends AbstractController
     #[Route('/create', name: 'api_appointment_create', methods: "POST")]
     public function create(Request $request): Response
     {
-
-        // TODO: appointments can be reserved in every 30minutes!
         // TODO: it can be only the future date
         $date = $request->request->get('date');
 
+        $isAvailable = $this->doctrine
+            ->getRepository(Appointment::class)
+            ->isAvailable(\DateTime::createFromFormat('d.m.Y H:i', $date));
+        
+        if(!$isAvailable) {
+            return new Response("Appointment is not created!", 400);
+        }
+
         $appointment = new Appointment();
-        $appointment->setDate( \DateTime::createFromFormat('d/m/Y H:i', $date) )
+        $appointment->setDate( \DateTime::createFromFormat('d.m.Y H:i', $date) )
             ->setStatus('RESERVED');
 
         $errors = $this->validator->validate($appointment);
@@ -38,7 +43,7 @@ class AppointmentController extends AbstractController
 
             $errorsString = (string) $errors;
     
-            return new Response($errorsString);
+            return new Response($errorsString, 400);
         }
 
         $entityManager = $this->doctrine->getManager();
@@ -56,7 +61,7 @@ class AppointmentController extends AbstractController
 
         $appointments = $this->doctrine
             ->getRepository(Appointment::class)
-            ->findByDate($date);
+            ->findByDay($date);
 
         if(count($appointments) === 0) {
             return new Response('Nothing found', 404);
