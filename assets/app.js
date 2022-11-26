@@ -8,8 +8,12 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 import ProtectedRoute from './Components/ProtectedRoute';
 
+import { Container } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const App = () => {
     return (
+        <Container>
         <BrowserRouter>
             <Routes>
                 <Route 
@@ -20,6 +24,7 @@ const App = () => {
                 <Route path={APP_ROUTES.SIGN_UP} element={<Register />} />
             </Routes>
         </BrowserRouter>
+        </Container>
     );
 }
 
