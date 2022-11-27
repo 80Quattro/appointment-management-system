@@ -7,24 +7,26 @@ import Appointments from './Pages/Appointments';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import ProtectedRoute from './Components/ProtectedRoute';
+import MainNavbar from './Components/MainNavbar';
 
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
     return (
-        <Container>
         <BrowserRouter>
-            <Routes>
-                <Route 
-                    path={APP_ROUTES.HOME} 
-                    element={ <ProtectedRoute> <Appointments /> </ProtectedRoute> } 
-                />
-                <Route path={APP_ROUTES.SIGN_IN} element={<Login />} />
-                <Route path={APP_ROUTES.SIGN_UP} element={<Register />} />
-            </Routes>
+            <MainNavbar />
+            <Container>
+                <Routes>
+                    <Route 
+                        path={APP_ROUTES.HOME} 
+                        element={ <ProtectedRoute> <Appointments /> </ProtectedRoute> } 
+                    />
+                    <Route path={APP_ROUTES.SIGN_IN} element={<Login />} />
+                    <Route path={APP_ROUTES.SIGN_UP} element={<Register />} />
+                </Routes>
+            </Container>
         </BrowserRouter>
-        </Container>
     );
 }
 
