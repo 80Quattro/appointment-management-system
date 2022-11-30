@@ -8,12 +8,14 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 import ProtectedRoute from './Components/ProtectedRoute';
 import MainNavbar from './Components/MainNavbar';
+import { UserProvider } from './Contexts/UserContext';
 
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
     return (
+        <UserProvider>
         <BrowserRouter>
             <MainNavbar />
             <Container>
@@ -27,6 +29,7 @@ const App = () => {
                 </Routes>
             </Container>
         </BrowserRouter>
+        </UserProvider>
     );
 }
 

@@ -22,7 +22,7 @@ class AuthService {
 
         const options = {
             method: 'post',
-            data: { email, password }
+            data: { username: email, password }
         }
 
         try {
