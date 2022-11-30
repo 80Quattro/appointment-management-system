@@ -4,15 +4,19 @@ export const UserContext = createContext();
 
 export const UserProvider = (props) => {
 
-    //const [isLoggedIn, setIsLoggedIn] = useState(false);
-    //const [token, setToken] = useState(null);
-    //const [roles, setRoles] = useState([]);
     const [contextState, setContextState] = useState({
         isLoggedIn: false,
         userName: null,
         token: null,
         roles: []
-    })
+    });
+
+    const checkIfLoggedIn = () => {
+        let token = localStorage.getItem('token');
+        if(token !== null) {
+            onLogin(token);
+        }
+    }
 
     const onLogin = (token) => {
         // token decode
@@ -24,12 +28,26 @@ export const UserProvider = (props) => {
 
         let decoded = JSON.parse(jsonPayload);
 
+        localStorage.setItem('token', token);
+
         setContextState({
             isLoggedIn: true,
             userName: decoded.username,
             token: token,
             roles: decoded.roles
-        })
+        });
+    }
+
+    const onLogOut = () => {
+
+        localStorage.removeItem('token');
+
+        setContextState({
+            isLoggedIn: false,
+            userName: null,
+            token: null,
+            roles: []
+        });
     }
 
     return (
@@ -39,7 +57,9 @@ export const UserProvider = (props) => {
                 userName: contextState.userName,
                 token: contextState.token,
                 roles: contextState.roles,
-                onLogin
+                onLogin,
+                onLogOut,
+                checkIfLoggedIn
             }}
         >
             {props.children}

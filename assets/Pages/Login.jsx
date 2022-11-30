@@ -1,4 +1,6 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from "react-router-dom";
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -6,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 
 import { login } from '../Services/AuthService';
 import { UserContext } from '../Contexts/UserContext';
-//import { saveUser } from '../Contexts/UserContextActions';
+import { APP_ROUTES } from '../Utils/constants';
 
 const Login = () => {
 
@@ -17,6 +19,8 @@ const Login = () => {
 
     const [validated, setValidated] = useState(false);
 
+    let navigate = useNavigate();
+
     const handleSubmit = (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -24,8 +28,9 @@ const Login = () => {
         const form = event.currentTarget;
         if (form.checkValidity()) {
             login(email, password).then(response => {
-                console.log(response);
+                // TODO: what if false ???
                 onLogin(response.token);
+                navigate(APP_ROUTES.HOME);
             })
         }
 

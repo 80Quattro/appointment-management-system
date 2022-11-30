@@ -1,4 +1,4 @@
-import React, { StrictMode } from 'react';
+import React, { StrictMode, useContext, useEffect } from 'react';
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { APP_ROUTES } from './Utils/constants';
@@ -8,14 +8,22 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 import ProtectedRoute from './Components/ProtectedRoute';
 import MainNavbar from './Components/MainNavbar';
-import { UserProvider } from './Contexts/UserContext';
+
+import { UserContext, UserProvider } from './Contexts/UserContext';
 
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
+
+    const {checkIfLoggedIn} = useContext(UserContext);
+
+    // On startup check if auth token is stored from last session
+    useEffect(() => {
+        checkIfLoggedIn();
+    }, []);
+
     return (
-        <UserProvider>
         <BrowserRouter>
             <MainNavbar />
             <Container>
@@ -29,7 +37,6 @@ const App = () => {
                 </Routes>
             </Container>
         </BrowserRouter>
-        </UserProvider>
     );
 }
 
@@ -38,6 +45,8 @@ const root = createRoot(rootElement);
 
 root.render(
     <StrictMode>
-        <App />
+        <UserProvider>
+            <App />
+        </UserProvider>
     </StrictMode>
   );
