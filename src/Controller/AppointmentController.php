@@ -82,6 +82,7 @@ class AppointmentController extends AbstractController
     }
 
     // Get available appointment dates
+    // TODO: AppointmentService with all calcuations
     #[Route('/get/free/{startDate}/{endDate}', name: 'api_appointment_get_free', methods: "GET")]
     public function getFree($startDate, $endDate): Response
     {
