@@ -21,6 +21,12 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.0.3",
+        "@fullcalendar/daygrid": "^6.0.3",
+        "@fullcalendar/interaction": "^6.0.3",
+        "@fullcalendar/list": "^6.0.3",
+        "@fullcalendar/react": "^6.0.4",
+        "@fullcalendar/timegrid": "^6.0.3",
         "axios": "^1.2.0",
         "bootstrap": "^5.2.3",
         "prop-types": "^15.8.1",
