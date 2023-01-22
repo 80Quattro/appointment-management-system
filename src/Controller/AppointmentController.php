@@ -80,4 +80,52 @@ class AppointmentController extends AbstractController
             $appointmentsArray
         );
     }
+
+    // Get available appointment dates
+    #[Route('/get/free/{startDate}/{endDate}', name: 'api_appointment_get_free', methods: "GET")]
+    public function getFree($startDate, $endDate): Response
+    {
+        // Range of dates to search
+        $startDate = \DateTime::createFromFormat('d.m.Y', $startDate);
+        $startDate->setTime(0,0,0);
+        $endDate = \DateTime::createFromFormat('d.m.Y', $endDate);
+        $endDate->setTime(24,59,59);
+
+        // Working hours
+        $minTime = new \DateTime();
+        $minTime->setTime(7,0,0);
+        $maxTime = new \DateTime();
+        $maxTime->setTime(17,0,0);
+
+        // Get already reserved appointments
+        $appointments = $this->doctrine
+            ->getRepository(Appointment::class)
+            ->findByDates($startDate, $endDate);
+
+        // convert appointments array to array with only DateTime objects
+        $reserved = array();
+        foreach($appointments as $app) {
+            array_push($reserved, $app->getDate());
+        }
+
+        // Search for all available dates between startDate and endDate
+        // and in working hours
+        // TODO: exclude weekends 
+        $freeAppointments = array();
+        for($date = $startDate; $date < $endDate; $date->modify('+1 day')) {
+            $date->setTime(
+                $minTime->format("H"),
+                $minTime->format("i")
+            );
+            for($date; intval($date->format('H')) < intval($maxTime->format('H')); $date->modify('+30 min')) {
+                if(!in_array($date, $reserved)) {
+                    array_push($freeAppointments, clone $date);
+                }
+            }
+        }
+        
+        return $this->json(
+            $freeAppointments
+        );
+    }
 }

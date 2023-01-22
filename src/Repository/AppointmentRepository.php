@@ -58,9 +58,24 @@ class AppointmentRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
+    public function findByDates(DateTime $startDate, DateTime $endDate): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.date BETWEEN :startDate AND :endDate')
+            ->andWhere('a.status = :status')
+            ->setParameter('startDate', $startDate->format('Y-m-d H:i:s'))
+            ->setParameter('endDate', $endDate->format('Y-m-d H:i:s'))
+            ->setParameter('status', 'RESERVED');
+        
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
     public function isAvailable(DateTime $date): bool
     {
         // appointment can be reserved in every 30min
+        // TODO: only working hours !!!
         $min = $date->format('i');
         if($min != "00" && $min != "30") {
             return false;
