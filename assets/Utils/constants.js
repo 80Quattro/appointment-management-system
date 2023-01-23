@@ -3,6 +3,7 @@ export const API_ROUTES = {
     SIGN_UP: `${API_URL}/api/register`,
     SIGN_IN: `${API_URL}/api/login_check`,
     READ: `${API_URL}/api/appointment/read`,
+    READ_AVAILABLE: `${API_URL}/api/appointment/get/free`,
 }
 
 export const APP_ROUTES = {

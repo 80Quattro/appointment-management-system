@@ -1,22 +1,30 @@
 import {useEffect, useState} from 'react';
 import AppointmentAPI from '../Services/AppointmentsAPI';
 
-const useAppointments = (date) => {
+const useAppointments = (startDate, endDate) => {
 
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
 
-        // if no date provided - set date to today
-        if(date === null) {
-            date = new Date();
+        if(startDate === null || endDate === null) {
+            return;
         }
 
-        AppointmentAPI.read(date).then((data) => {
+        AppointmentAPI.readAvailable(startDate, endDate).then((data) => {
             console.log(data);
+            let appointments = new Array();
+            data.forEach(date => {
+                appointments.push({
+                    title: 'Free!',
+                    start: date,
+                })
+            });
+            console.log(appointments);
+            setAppointments(appointments);
         })
 
-    }, [date]);
+    }, [endDate]);
 
     return appointments;
 }

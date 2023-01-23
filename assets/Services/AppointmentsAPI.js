@@ -3,10 +3,12 @@ import { API_ROUTES } from "../Utils/constants"
 
 class AppointmentAPI {
 
-    static async read(date) {
+    static async readAvailable(startDate, endDate) {
 
-        const dateString = date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
-        const url = API_ROUTES.READ + "/" + dateString;
+        const startDateString = startDate.getDate() + "." + (startDate.getMonth() + 1) + "." + startDate.getFullYear();
+        const endDateString = endDate.getDate() + "." + (endDate.getMonth() + 1) + "." + endDate.getFullYear();
+
+        const url = API_ROUTES.READ_AVAILABLE + "/" + startDateString + "/" + endDateString;
         const token = localStorage.getItem('token');
 
         const options = {
@@ -24,6 +26,6 @@ class AppointmentAPI {
 
 }
 
-export const read = AppointmentAPI.read;
+export const readAvailable = AppointmentAPI.readAvailable;
 
 export default AppointmentAPI;

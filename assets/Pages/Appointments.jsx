@@ -12,8 +12,15 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 
 const Appointments = () => {
 
-    const [date, setDate] = useState(null);
-    const appointments = useAppointments(date);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const appointments = useAppointments(startDate, endDate);
+
+    const onDateSet = (dateInfo) => {
+        console.log(dateInfo.start, dateInfo.end);
+        setStartDate(dateInfo.start);
+        setEndDate(dateInfo.end);
+    }
 
     return (
         <Row>
@@ -26,15 +33,14 @@ const Appointments = () => {
                     slotMaxTime={'19:00:00'}
                     slotLabelInterval={'00:30'}
                     defaultAllDay={false}
+                    defaultTimedEventDuration={'00:30'}
                     contentHeight='auto'
                     headerToolbar={{
                         left: 'prev,next today',
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,listWeek'
                     }}
-                    events={[
-                        { title: 'event 2', start: '2023-02-02T12:30:00', end: '2023-02-02T13:00:00', allDay: false }
-                    ]}
+                    events={appointments}
                     displayEventTime={true}
                     businessHours={{
                         // days of week. an array of zero-based day of week integers (0=Sunday)
@@ -43,10 +49,7 @@ const Appointments = () => {
                         startTime: '10:00', // a start time (10am in this example)
                         endTime: '18:00', // an end time (6pm in this example)
                     }}
-                    validRange={{
-                        start: '2023-01-01',
-                        end: '2023-03-30'
-                    }}
+                    datesSet={onDateSet}
                 />
             </Col>
         </Row>

@@ -111,7 +111,8 @@ class AppointmentController extends AbstractController
 
         // Search for all available dates between startDate and endDate
         // and in working hours
-        // TODO: exclude weekends 
+        // TODO: exclude weekends
+        // TODO: calculate and send also end of appointment (to better show it on frontend)
         $freeAppointments = array();
         for($date = $startDate; $date < $endDate; $date->modify('+1 day')) {
             $date->setTime(
