@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 import Row from 'react-bootstrap/Row';
@@ -12,7 +12,7 @@ import { APP_ROUTES } from '../Utils/constants';
 
 const Login = () => {
 
-    const {onLogin} = useContext(UserContext);
+    const {onLogin, isLoggedIn} = useContext(UserContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,6 +20,13 @@ const Login = () => {
     const [validated, setValidated] = useState(false);
 
     let navigate = useNavigate();
+
+    // if logged in -> redirect to home page
+    useEffect(() => {
+        if(isLoggedIn) {
+            navigate(APP_ROUTES.HOME);
+        }
+    }, [isLoggedIn]);
 
     const handleSubmit = (event) => {
         event.preventDefault();

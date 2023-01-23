@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import { register } from '../Services/AuthService';
+import { UserContext } from '../Contexts/UserContext';
 import { APP_ROUTES } from '../Utils/constants';
 
 const Register = () => {
@@ -16,6 +17,15 @@ const Register = () => {
 
     const [validated, setValidated] = useState(false);
     let navigate = useNavigate();
+
+    const {isLoggedIn} = useContext(UserContext);
+
+    // if logged in -> redirect to home page
+    useEffect(() => {
+        if(isLoggedIn) {
+            navigate(APP_ROUTES.HOME);
+        }
+    }, [isLoggedIn]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
