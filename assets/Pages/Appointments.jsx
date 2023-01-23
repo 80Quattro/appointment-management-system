@@ -29,6 +29,7 @@ const Appointments = () => {
                     plugins={[ dayGridPlugin, timeGridPlugin, listPlugin ]}
                     initialView="timeGridWeek"
                     firstDay={1}
+                    allDaySlot={false}
                     slotMinTime={'07:00:00'}
                     slotMaxTime={'19:00:00'}
                     slotLabelInterval={'00:30'}
@@ -40,7 +41,10 @@ const Appointments = () => {
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,listWeek'
                     }}
-                    events={appointments}
+                    eventSources={[{
+                        events: appointments,
+                        color: 'green'
+                    }]}
                     displayEventTime={true}
                     businessHours={{
                         // days of week. an array of zero-based day of week integers (0=Sunday)
