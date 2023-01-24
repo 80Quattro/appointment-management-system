@@ -3,6 +3,8 @@ import useAppointments from '../Hooks/useAppointments';
 
 import ConfirmAppointmentModal from '../Components/ConfirmAppointmentModal';
 
+import AppointmentAPI from '../Services/AppointmentsAPI';
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
@@ -42,7 +44,9 @@ const Appointments = () => {
     }
 
     const onModalConfirmed = () => {
-        console.log("CONFIRMED!");
+        AppointmentAPI.create(clickedDate.fullDate).then((data) => {
+            console.log(data);
+        })
     }
 
     return (

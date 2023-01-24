@@ -12,7 +12,7 @@ class AppointmentAPI {
         const token = localStorage.getItem('token');
 
         const options = {
-            method: 'get',
+            method: 'GET',
             headers: { Authorization: `Bearer ${token}` }
         }
 
@@ -24,8 +24,34 @@ class AppointmentAPI {
         }
     }
 
+    static async create(dateTime) {
+
+        const dateText = dateTime.getDate() + "." + (dateTime.getMonth() + 1) + "." + dateTime.getFullYear() + " " 
+                + dateTime.getHours() + ":" + dateTime.getMinutes();
+
+        const url = API_ROUTES.CREATE;
+        const token = localStorage.getItem('token');
+
+        const options = {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            data: {
+                date: dateText
+            }
+        }
+
+        try {
+            const response = await axios(url, options);
+            return response.data;
+        } catch(error) {
+            console.log(error);
+        }
+
+    }
+
 }
 
 export const readAvailable = AppointmentAPI.readAvailable;
+export const create = AppointmentAPI.create;
 
 export default AppointmentAPI;

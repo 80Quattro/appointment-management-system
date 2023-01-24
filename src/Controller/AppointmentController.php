@@ -23,7 +23,10 @@ class AppointmentController extends AbstractController
     public function create(Request $request): Response
     {
         // TODO: it can be only the future date
-        $date = $request->request->get('date');
+        //$date = $request->request->get('date');
+
+        $date = $request->getContent();
+        $date = json_decode($date, true)['date'];
 
         $isAvailable = $this->doctrine
             ->getRepository(Appointment::class)
