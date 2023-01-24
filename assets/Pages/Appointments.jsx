@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import useAppointments from '../Hooks/useAppointments';
 
+import ConfirmAppointmentModal from '../Components/ConfirmAppointmentModal';
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
@@ -16,10 +18,31 @@ const Appointments = () => {
     const [endDate, setEndDate] = useState(null);
     const appointments = useAppointments(startDate, endDate);
 
+    const [showModal, setShowModal] = useState(false);
+    const [clickedDate, setClickedDate] = useState({fullDate: null, dateToShow: null, timeToShow: null});
+
     const onDateSet = (dateInfo) => {
-        console.log(dateInfo.start, dateInfo.end);
         setStartDate(dateInfo.start);
         setEndDate(dateInfo.end);
+    }
+
+    const onEventClick = (info) => {
+        const startDate = info.event.start;
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        setClickedDate({
+            fullDate: startDate,
+            dateToShow: startDate.toLocaleDateString(undefined, options),
+            timeToShow: startDate.toLocaleTimeString('en-US')
+        })
+        setShowModal(true);
+    }
+
+    const onEventMouseEnter = (info) => {
+        info.el.style.cursor = "pointer"; 
+    }
+
+    const onModalConfirmed = () => {
+        console.log("CONFIRMED!");
     }
 
     return (
@@ -46,6 +69,9 @@ const Appointments = () => {
                         color: 'green'
                     }]}
                     displayEventTime={true}
+                    displayEventEnd={true}
+                    eventClick={onEventClick}
+                    eventMouseEnter={onEventMouseEnter}
                     businessHours={{
                         // days of week. an array of zero-based day of week integers (0=Sunday)
                         daysOfWeek: [ 1, 2, 3, 4 ], // Monday - Thursday
@@ -54,6 +80,13 @@ const Appointments = () => {
                         endTime: '18:00', // an end time (6pm in this example)
                     }}
                     datesSet={onDateSet}
+                />
+                <ConfirmAppointmentModal 
+                    show={showModal} 
+                    onHide={() => setShowModal(false)}
+                    onConfirmed={onModalConfirmed}
+                    date={clickedDate.dateToShow}
+                    time={clickedDate.timeToShow}
                 />
             </Col>
         </Row>

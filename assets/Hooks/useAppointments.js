@@ -12,7 +12,6 @@ const useAppointments = (startDate, endDate) => {
         }
 
         AppointmentAPI.readAvailable(startDate, endDate).then((data) => {
-            console.log(data);
             let appointments = new Array();
             data.forEach(date => {
                 appointments.push({
@@ -20,7 +19,6 @@ const useAppointments = (startDate, endDate) => {
                     start: date,
                 })
             });
-            console.log(appointments);
             setAppointments(appointments);
         })
 
