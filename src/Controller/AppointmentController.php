@@ -25,19 +25,20 @@ class AppointmentController extends AbstractController
         // TODO: it can be only the future date
         //$date = $request->request->get('date');
 
-        $date = $request->getContent();
-        $date = json_decode($date, true)['date'];
+        $content = $request->getContent();
+        $date = json_decode($content, true)['date'];
+        $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i', $date);
 
         $isAvailable = $this->doctrine
             ->getRepository(Appointment::class)
-            ->isAvailable(\DateTime::createFromFormat('d.m.Y H:i', $date));
+            ->isAvailable($dateTime);
         
         if(!$isAvailable) {
             return new Response("Appointment is not created!", 400);
         }
 
         $appointment = new Appointment();
-        $appointment->setDate( \DateTime::createFromFormat('d.m.Y H:i', $date) )
+        $appointment->setDate($dateTime)
             ->setStatus('RESERVED');
 
         $errors = $this->validator->validate($appointment);

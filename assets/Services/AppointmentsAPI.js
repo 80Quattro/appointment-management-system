@@ -1,5 +1,6 @@
 import axios from "axios";
-import { API_ROUTES } from "../Utils/constants"
+import { API_ROUTES } from "../Utils/constants";
+import { dateTimeToISOString, dateToISOString } from "../Utils/dateTimeHelpers";
 
 class AppointmentAPI {
 
@@ -26,9 +27,6 @@ class AppointmentAPI {
 
     static async create(dateTime) {
 
-        const dateText = dateTime.getDate() + "." + (dateTime.getMonth() + 1) + "." + dateTime.getFullYear() + " " 
-                + dateTime.getHours() + ":" + dateTime.getMinutes();
-
         const url = API_ROUTES.CREATE;
         const token = localStorage.getItem('token');
 
@@ -36,7 +34,7 @@ class AppointmentAPI {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
             data: {
-                date: dateText
+                date: dateTimeToISOString(dateTime)
             }
         }
 
