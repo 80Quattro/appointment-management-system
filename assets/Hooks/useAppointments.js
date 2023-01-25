@@ -5,11 +5,16 @@ const useAppointments = (startDate, endDate) => {
 
     const [appointments, setAppointments] = useState([]);
 
+    // show/hide spinner
+    const [loading, setLoading] = useState(false); 
+
     useEffect(() => {
 
         if(startDate === null || endDate === null) {
             return;
         }
+
+        setLoading(true);
 
         AppointmentAPI.readAvailable(startDate, endDate).then((data) => {
             let appointments = new Array();
@@ -20,11 +25,12 @@ const useAppointments = (startDate, endDate) => {
                 })
             });
             setAppointments(appointments);
+            setLoading(false);
         })
 
     }, [endDate]);
 
-    return appointments;
+    return [appointments, loading];
 }
  
 export default useAppointments;

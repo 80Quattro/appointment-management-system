@@ -4,6 +4,7 @@ import useAppointments from '../Hooks/useAppointments';
 import ConfirmAppointmentModal from '../Components/ConfirmAppointmentModal';
 
 import AppointmentAPI from '../Services/AppointmentsAPI';
+import Loading from '../Components/Loading';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -20,7 +21,7 @@ const Appointments = () => {
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const appointments = useAppointments(startDate, endDate);
+    const [appointments, appointmentsLoading] = useAppointments(startDate, endDate);
 
     const [showModal, setShowModal] = useState(false);
     const [clickedDate, setClickedDate] = useState({fullDate: null, dateToShow: null, timeToShow: null});
@@ -56,62 +57,61 @@ const Appointments = () => {
     }
 
     return (
-        <Row>
-            <Col>
-                <FullCalendar
-                    plugins={[ dayGridPlugin, timeGridPlugin, listPlugin ]}
-                    initialView="timeGridWeek"
-                    firstDay={1}
-                    allDaySlot={false}
-                    slotMinTime={'07:00:00'}
-                    slotMaxTime={'19:00:00'}
-                    slotLabelInterval={'00:30'}
-                    defaultAllDay={false}
-                    defaultTimedEventDuration={'00:30'}
-                    contentHeight='auto'
-                    headerToolbar={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,listWeek'
-                    }}
-                    eventSources={[{
-                        events: appointments,
-                        color: 'green'
-                    }]}
-                    displayEventTime={true}
-                    displayEventEnd={true}
-                    eventClick={onEventClick}
-                    eventMouseEnter={onEventMouseEnter}
-                    businessHours={{
-                        // days of week. an array of zero-based day of week integers (0=Sunday)
-                        daysOfWeek: [ 1, 2, 3, 4 ], // Monday - Thursday
-                      
-                        startTime: '10:00', // a start time (10am in this example)
-                        endTime: '18:00', // an end time (6pm in this example)
-                    }}
-                    datesSet={onDateSet}
-                />
+        <Row className='position-relative'>
+            {appointmentsLoading && <Loading />}
+            <FullCalendar
+                plugins={[ dayGridPlugin, timeGridPlugin, listPlugin ]}
+                initialView="timeGridWeek"
+                firstDay={1}
+                allDaySlot={false}
+                slotMinTime={'07:00:00'}
+                slotMaxTime={'19:00:00'}
+                slotLabelInterval={'00:30'}
+                defaultAllDay={false}
+                defaultTimedEventDuration={'00:30'}
+                contentHeight='auto'
+                headerToolbar={{
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                }}
+                eventSources={[{
+                    events: appointments,
+                    color: 'green'
+                }]}
+                displayEventTime={true}
+                displayEventEnd={true}
+                eventClick={onEventClick}
+                eventMouseEnter={onEventMouseEnter}
+                businessHours={{
+                    // days of week. an array of zero-based day of week integers (0=Sunday)
+                    daysOfWeek: [ 1, 2, 3, 4 ], // Monday - Thursday
+                    
+                    startTime: '10:00', // a start time (10am in this example)
+                    endTime: '18:00', // an end time (6pm in this example)
+                }}
+                datesSet={onDateSet}
+            />
 
-                <ConfirmAppointmentModal 
-                    show={showModal} 
-                    onHide={() => setShowModal(false)}
-                    onConfirmed={onModalConfirmed}
-                    date={clickedDate.dateToShow}
-                    time={clickedDate.timeToShow}
-                />
-                
-                <ToastContainer className="p-3" position={'bottom-center'}>
-                    <Toast bg={'success'} show={showSuccess} onClose={() => setShowSuccess(false)} delay={3000} autohide>
-                        <Toast.Header>Success!<span className='me-auto'></span></Toast.Header>
-                        <Toast.Body>Your appointment is successfuly booked!</Toast.Body>
-                    </Toast>
-                    <Toast bg={'danger'} show={showFailure} onClose={() => setShowFailure(false)} delay={3000} autohide>
-                        <Toast.Header>Failure!<span className='me-auto'></span></Toast.Header>
-                        <Toast.Body>Your appointment is not booked! An error occured.</Toast.Body>
-                    </Toast>
-                </ToastContainer>
+            <ConfirmAppointmentModal 
+                show={showModal} 
+                onHide={() => setShowModal(false)}
+                onConfirmed={onModalConfirmed}
+                date={clickedDate.dateToShow}
+                time={clickedDate.timeToShow}
+            />
+            
+            <ToastContainer className="p-3" position={'bottom-center'}>
+                <Toast bg={'success'} show={showSuccess} onClose={() => setShowSuccess(false)} delay={3000} autohide>
+                    <Toast.Header>Success!<span className='me-auto'></span></Toast.Header>
+                    <Toast.Body>Your appointment is successfuly booked!</Toast.Body>
+                </Toast>
+                <Toast bg={'danger'} show={showFailure} onClose={() => setShowFailure(false)} delay={3000} autohide>
+                    <Toast.Header>Failure!<span className='me-auto'></span></Toast.Header>
+                    <Toast.Body>Your appointment is not booked! An error occured.</Toast.Body>
+                </Toast>
+            </ToastContainer>
 
-            </Col>
         </Row>
     );
 }
