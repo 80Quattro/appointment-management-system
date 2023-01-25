@@ -57,7 +57,7 @@ class AppointmentController extends AbstractController
         return new Response('Saved new appointment with id ' . $appointment->getId(), 201);
     }
 
-    #[Route('/read/{date}', name: 'api_appointment_read', methods: "GET")]
+    #[Route('/read/{date}', name: 'read', methods: "GET")]
     public function read($date): Response
     {
         $date = \DateTime::createFromFormat('d.m.Y', $date);
@@ -87,14 +87,29 @@ class AppointmentController extends AbstractController
 
     // Get available appointment dates
     // TODO: AppointmentService with all calcuations
-    #[Route('/get/free/{startDate}/{endDate}', name: 'api_appointment_get_free', methods: "GET")]
-    public function getFree($startDate, $endDate): Response
+    #[Route('/available', name: 'available', methods: "GET")]
+    public function available(Request $request): Response
     {
-        // Range of dates to search
-        $startDate = \DateTime::createFromFormat('d.m.Y', $startDate);
-        $startDate->setTime(0,0,0);
-        $endDate = \DateTime::createFromFormat('d.m.Y', $endDate);
-        $endDate->setTime(24,59,59);
+        // Range of dates to search and params validation
+        $startDate = $request->query->get('startDate');
+        $endDate = $request->query->get('endDate');
+
+        if($startDate === null) { 
+            return new Response("startDate param is missing!", 400); 
+        }
+        elseif($endDate === null) { 
+            return new Response("endDate param is missing!", 400);
+        }
+        
+        $startDate = \DateTime::createFromFormat('Y-m-d', $startDate);
+        $endDate = \DateTime::createFromFormat('Y-m-d', $endDate);
+
+        if(!$startDate || !$endDate) {
+            return new Response("startDate or endDate is invalid! Please provide correct date in YYYY-MM-DD format", 400);
+        }
+
+        $startDate->setTime(0,0,0); // begin of that day
+        $endDate->setTime(24,59,59); // end of that day
 
         // Working hours
         $minTime = new \DateTime();
@@ -117,7 +132,7 @@ class AppointmentController extends AbstractController
         // and in working hours
         // TODO: exclude weekends
         // TODO: calculate and send also end of appointment (to better show it on frontend)
-        $freeAppointments = array();
+        $availableAppointments = array();
         for($date = $startDate; $date < $endDate; $date->modify('+1 day')) {
             $date->setTime(
                 $minTime->format("H"),
@@ -125,13 +140,14 @@ class AppointmentController extends AbstractController
             );
             for($date; intval($date->format('H')) < intval($maxTime->format('H')); $date->modify('+30 min')) {
                 if(!in_array($date, $reserved)) {
-                    array_push($freeAppointments, clone $date);
+                    array_push($availableAppointments, clone $date);
                 }
             }
         }
         
         return $this->json(
-            $freeAppointments
+            $availableAppointments
         );
     }
+
 }

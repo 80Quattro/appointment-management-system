@@ -6,15 +6,16 @@ class AppointmentAPI {
 
     static async readAvailable(startDate, endDate) {
 
-        const startDateString = startDate.getDate() + "." + (startDate.getMonth() + 1) + "." + startDate.getFullYear();
-        const endDateString = endDate.getDate() + "." + (endDate.getMonth() + 1) + "." + endDate.getFullYear();
-
-        const url = API_ROUTES.READ_AVAILABLE + "/" + startDateString + "/" + endDateString;
+        const url = API_ROUTES.READ_AVAILABLE;
         const token = localStorage.getItem('token');
 
         const options = {
             method: 'GET',
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
+            params: {
+                startDate: dateToISOString(startDate),
+                endDate: dateToISOString(endDate)
+            }
         }
 
         try {
