@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/api/appointment', name: 'api_appointment')]
+#[Route('/api/appointment', name: 'api_appointment_')]
 class AppointmentController extends AbstractController
 {
 
@@ -19,7 +19,7 @@ class AppointmentController extends AbstractController
 
     }
 
-    #[Route('/create', name: 'api_appointment_create', methods: "POST")]
+    #[Route('', name: 'create', methods: "POST")]
     public function create(Request $request): Response
     {
         // TODO: it can be only the future date

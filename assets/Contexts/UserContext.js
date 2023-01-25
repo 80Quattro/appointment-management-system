@@ -7,6 +7,7 @@ export const UserProvider = (props) => {
     const [contextState, setContextState] = useState({
         isLoggedIn: false,
         userName: null,
+        expires: null,
         token: null,
         roles: []
     });
@@ -27,12 +28,25 @@ export const UserProvider = (props) => {
         }).join(''));
 
         let decoded = JSON.parse(jsonPayload);
+        
+        // if token expired
+        if(decoded.exp < Date.now() / 1000) {
+            setContextState({
+                isLoggedIn: false,
+                userName: null,
+                expires: null,
+                token: null,
+                roles: []
+            });
+            return;
+        }
 
         localStorage.setItem('token', token);
 
         setContextState({
             isLoggedIn: true,
             userName: decoded.username,
+            expires: decoded.exp,
             token: token,
             roles: decoded.roles
         });
@@ -45,6 +59,7 @@ export const UserProvider = (props) => {
         setContextState({
             isLoggedIn: false,
             userName: null,
+            expires: null,
             token: null,
             roles: []
         });
