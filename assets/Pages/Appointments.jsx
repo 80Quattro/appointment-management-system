@@ -7,6 +7,8 @@ import AppointmentAPI from '../Services/AppointmentsAPI';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
 
 import FullCalendar from '@fullcalendar/react'; // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
@@ -22,6 +24,9 @@ const Appointments = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [clickedDate, setClickedDate] = useState({fullDate: null, dateToShow: null, timeToShow: null});
+
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showFailure, setShowFailure] = useState(false);
 
     const onDateSet = (dateInfo) => {
         setStartDate(dateInfo.start);
@@ -45,7 +50,8 @@ const Appointments = () => {
 
     const onModalConfirmed = () => {
         AppointmentAPI.create(clickedDate.fullDate).then((data) => {
-            console.log(data);
+            setShowModal(false);
+            setShowSuccess(true);
         })
     }
 
@@ -85,6 +91,7 @@ const Appointments = () => {
                     }}
                     datesSet={onDateSet}
                 />
+
                 <ConfirmAppointmentModal 
                     show={showModal} 
                     onHide={() => setShowModal(false)}
@@ -92,6 +99,18 @@ const Appointments = () => {
                     date={clickedDate.dateToShow}
                     time={clickedDate.timeToShow}
                 />
+                
+                <ToastContainer className="p-3" position={'bottom-center'}>
+                    <Toast bg={'success'} show={showSuccess} onClose={() => setShowSuccess(false)} delay={3000} autohide>
+                        <Toast.Header>Success!<span className='me-auto'></span></Toast.Header>
+                        <Toast.Body>Your appointment is successfuly booked!</Toast.Body>
+                    </Toast>
+                    <Toast bg={'danger'} show={showFailure} onClose={() => setShowFailure(false)} delay={3000} autohide>
+                        <Toast.Header>Failure!<span className='me-auto'></span></Toast.Header>
+                        <Toast.Body>Your appointment is not booked! An error occured.</Toast.Body>
+                    </Toast>
+                </ToastContainer>
+
             </Col>
         </Row>
     );
