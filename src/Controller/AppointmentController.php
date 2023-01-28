@@ -14,7 +14,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class AppointmentController extends AbstractController
 {
 
-    public function __construct(private ManagerRegistry $doctrine, private ValidatorInterface $validator)
+    public function __construct(
+        private ManagerRegistry $doctrine, 
+        private ValidatorInterface $validator, 
+    )
     {
 
     }
@@ -39,7 +42,8 @@ class AppointmentController extends AbstractController
 
         $appointment = new Appointment();
         $appointment->setDate($dateTime)
-            ->setStatus('RESERVED');
+            ->setStatus('RESERVED')
+            ->setUser($this->getUser());
 
         $errors = $this->validator->validate($appointment);
         
@@ -55,34 +59,6 @@ class AppointmentController extends AbstractController
         $entityManager->flush();
 
         return new Response('Saved new appointment with id ' . $appointment->getId(), 201);
-    }
-
-    #[Route('/read/{date}', name: 'read', methods: "GET")]
-    public function read($date): Response
-    {
-        $date = \DateTime::createFromFormat('d.m.Y', $date);
-        $date->setTime(0,0,0);
-
-        $appointments = $this->doctrine
-            ->getRepository(Appointment::class)
-            ->findByDay($date);
-
-        if(count($appointments) === 0) {
-            return new Response('Nothing found', 404);
-        }
-
-        $appointmentsArray = array();
-
-        foreach($appointments as $appointment) {
-            $appointmentsArray[] = array(
-                'id' => $appointment->getId(),
-                'date' => $appointment->getDate(),
-            );
-        }
-        
-        return $this->json(
-            $appointmentsArray
-        );
     }
 
     // Get available appointment dates
@@ -130,7 +106,6 @@ class AppointmentController extends AbstractController
 
         // Search for all available dates between startDate and endDate
         // and in working hours
-        // TODO: calculate and send also end of appointment (to better show it on frontend)
         $availableAppointments = array();
         // loop on date
         for($date = $startDate; $date < $endDate; $date->modify('+1 day')) {

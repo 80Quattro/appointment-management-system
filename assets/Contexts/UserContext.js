@@ -28,6 +28,7 @@ export const UserProvider = (props) => {
         }).join(''));
 
         let decoded = JSON.parse(jsonPayload);
+        console.log(decoded);
         
         // if token expired
         if(decoded.exp < Date.now() / 1000) {

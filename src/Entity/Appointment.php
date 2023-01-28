@@ -23,6 +23,10 @@ class Appointment
     #[Assert\Choice(['RESERVED', 'DONE', 'PAID', 'CANCELD'])]
     private ?string $status = null;
 
+    #[ORM\ManyToOne(inversedBy: 'appointments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,5 +59,17 @@ class Appointment
     public function toArray()
     {
         return ['id' => $this->id, 'date' => $this->date, 'status' => $this->status];
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }
