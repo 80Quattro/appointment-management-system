@@ -20,8 +20,9 @@ const useAppointments = (startDate, endDate) => {
             let appointments = new Array();
             data.forEach(date => {
                 appointments.push({
-                    title: 'Free!',
-                    start: date,
+                    title: 'Available',
+                    start: date.start,
+                    end: date.end
                 })
             });
             setAppointments(appointments);

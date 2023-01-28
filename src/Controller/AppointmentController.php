@@ -146,7 +146,14 @@ class AppointmentController extends AbstractController
             // loop on time
             for($date; intval($date->format('H')) < intval($maxTime->format('H')); $date->modify('+30 min')) {
                 if(!in_array($date, $reserved)) {
-                    array_push($availableAppointments, clone $date);
+                    $d = clone $date;
+                    array_push(
+                        $availableAppointments, 
+                        [
+                            'start' => clone $date,
+                            'end' => $d->modify('+30 min')
+                        ]
+                    );
                 }
             }
         }
