@@ -130,14 +130,20 @@ class AppointmentController extends AbstractController
 
         // Search for all available dates between startDate and endDate
         // and in working hours
-        // TODO: exclude weekends
         // TODO: calculate and send also end of appointment (to better show it on frontend)
         $availableAppointments = array();
+        // loop on date
         for($date = $startDate; $date < $endDate; $date->modify('+1 day')) {
+            $dayOfWeek = $date->format('w');
+            // if Saturday or Sunday - skip and don't add it to available appointments
+            if($dayOfWeek == 6 || $dayOfWeek == 0) {
+                continue;
+            }
             $date->setTime(
                 $minTime->format("H"),
                 $minTime->format("i")
             );
+            // loop on time
             for($date; intval($date->format('H')) < intval($maxTime->format('H')); $date->modify('+30 min')) {
                 if(!in_array($date, $reserved)) {
                     array_push($availableAppointments, clone $date);
