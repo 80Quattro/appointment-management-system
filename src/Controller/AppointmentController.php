@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/api/appointment', name: 'api_appointment_')]
+#[Route('/api/appointments', name: 'api_appointments_')]
 class AppointmentController extends AbstractController
 {
 
