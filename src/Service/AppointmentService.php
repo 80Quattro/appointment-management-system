@@ -64,6 +64,11 @@ class AppointmentService
         $startDate->setTime(0,0,0); // begin of that day
         $endDate->setTime(24,59,59); // end of that day
 
+        // available appointments are only in the future
+        if($startDate < new DateTime()) {
+            $startDate = new DateTime();
+        }
+
         // Working hours
         $minTime = new \DateTime();
         $minTime->setTime(7,0,0);
