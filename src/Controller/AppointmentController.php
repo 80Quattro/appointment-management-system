@@ -19,6 +19,7 @@ class AppointmentController extends AbstractController
     public function __construct(
         private ManagerRegistry $doctrine, 
         private ValidatorInterface $validator, 
+        private AppointmentService $appointmentService
     )
     {
 
@@ -27,45 +28,21 @@ class AppointmentController extends AbstractController
     #[Route('', name: 'create', methods: "POST")]
     public function create(Request $request): Response
     {
-        // TODO: it can be only the future date
-        //$date = $request->request->get('date');
-
         $content = $request->getContent();
         $date = json_decode($content, true)['date'];
-        $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i', $date);
 
-        $isAvailable = $this->doctrine
-            ->getRepository(Appointment::class)
-            ->isAvailable($dateTime);
-        
-        if(!$isAvailable) {
-            return new Response("Appointment is not created!", 400);
+        if($date === null) { 
+            return new Response("Date param is missing!", Response::HTTP_BAD_REQUEST); 
         }
 
-        $appointment = new Appointment();
-        $appointment->setDate($dateTime)
-            ->setStatus('RESERVED')
-            ->setUser($this->getUser());
+        $id = $this->appointmentService->create($date);
 
-        $errors = $this->validator->validate($appointment);
-        
-        if (count($errors) > 0) {
-
-            $errorsString = (string) $errors;
-    
-            return new Response($errorsString, 400);
-        }
-
-        $entityManager = $this->doctrine->getManager();
-        $entityManager->persist($appointment);
-        $entityManager->flush();
-
-        return new Response('Saved new appointment with id ' . $appointment->getId(), 201);
+        return new Response('Saved new appointment with id ' . $id, Response::HTTP_CREATED);
     }
 
     // Get available appointment dates
     #[Route('/available', name: 'available', methods: "GET")]
-    public function available(Request $request, AppointmentService $appointmentService): Response
+    public function available(Request $request): Response
     {
         // Range of dates to search and params validation
         $startDate = $request->query->get('startDate');
@@ -79,7 +56,7 @@ class AppointmentController extends AbstractController
         }
         
         return $this->json(
-            $appointmentService->getAvailable($startDate, $endDate)
+            $this->appointmentService->getAvailable($startDate, $endDate)
         );
     }
 
