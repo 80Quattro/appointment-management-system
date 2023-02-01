@@ -1,0 +1,4 @@
+framework:
+  exceptions:
+    App\Exception\InvalidParameterException:
+      status_code: 400
