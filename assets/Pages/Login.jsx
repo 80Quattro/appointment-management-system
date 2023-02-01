@@ -19,7 +19,7 @@ const Login = () => {
 
     const [validated, setValidated] = useState(false);
 
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     // if logged in -> redirect to home page
     useEffect(() => {

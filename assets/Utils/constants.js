@@ -10,5 +10,6 @@ export const APP_ROUTES = {
     HOME: '/',
     SIGN_UP: '/signup',
     SIGN_IN: '/signin',
+    PROFILE: '/profile',
     DASHBOARD: '/dashboard',
 }

@@ -13,6 +13,9 @@ const NavUser = () => {
             <LinkContainer to={APP_ROUTES.HOME}>
                 <Nav.Link>Appointments</Nav.Link>
             </LinkContainer>
+            <LinkContainer to={APP_ROUTES.PROFILE}>
+                <Nav.Link>Profile</Nav.Link>
+            </LinkContainer>
             <Nav.Link onClick={onLogOut}>Log out</Nav.Link>
         </Nav>
      );

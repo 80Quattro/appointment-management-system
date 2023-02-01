@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import AppointmentAPI from '../Services/AppointmentsAPI';
 
-const useAppointments = (startDate, endDate) => {
+const useAvailable = (startDate, endDate) => {
 
     const [appointments, setAppointments] = useState([]);
 
@@ -34,4 +34,4 @@ const useAppointments = (startDate, endDate) => {
     return [appointments, loading];
 }
  
-export default useAppointments;
+export default useAvailable;
