@@ -48,9 +48,28 @@ class AppointmentAPI {
 
     }
 
+    static async getUserAppointments() {
+
+        const token = localStorage.getItem('token');
+
+        const options = {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${token}` },
+        }
+
+        try {
+            const response = await axios(API_ROUTES.BOOKED_BY_USER, options);
+            return response.data;
+        } catch(error) {
+            console.log(error);
+        }
+
+    }
+
 }
 
 export const readAvailable = AppointmentAPI.readAvailable;
 export const create = AppointmentAPI.create;
+export const getUserAppointments = AppointmentAPI.getUserAppointments;
 
 export default AppointmentAPI;

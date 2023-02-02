@@ -17,7 +17,8 @@ class UserController extends AbstractController
     {
         $user = $this->getUser();
         $appointments = $user->getAppointments();
-        dump($appointments); die;
+        //dump($appointments); die;
+        //die;
         
         return $this->json(
             $appointments

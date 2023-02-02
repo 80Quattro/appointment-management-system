@@ -4,6 +4,7 @@ export const API_ROUTES = {
     SIGN_IN: `${API_URL}/api/login_check`,
     READ_AVAILABLE: `${API_URL}/api/appointments/available`,
     CREATE: `${API_URL}/api/appointments`,
+    BOOKED_BY_USER: `${API_URL}/api/users/appointments`
 }
 
 export const APP_ROUTES = {
