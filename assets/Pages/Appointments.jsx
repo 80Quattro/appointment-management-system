@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useAppointments from '../Hooks/useAppointments';
+import useAvailable from '../Hooks/useAvailable';
 
 import ConfirmAppointmentModal from '../Components/ConfirmAppointmentModal';
 
@@ -19,7 +19,7 @@ const Appointments = () => {
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const [appointments, appointmentsLoading] = useAppointments(startDate, endDate);
+    const [appointments, appointmentsLoading] = useAvailable(startDate, endDate);
 
     const [showModal, setShowModal] = useState(false);
     const [clickedDate, setClickedDate] = useState({fullDate: null, dateToShow: null, timeToShow: null});

@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { APP_ROUTES } from './Utils/constants';
   
 import Appointments from './Pages/Appointments';
+import Profile from './Pages/Profile';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import ProtectedRoute from './Components/ProtectedRoute';
@@ -28,10 +29,8 @@ const App = () => {
             <MainNavbar />
             <Container>
                 <Routes>
-                    <Route 
-                        path={APP_ROUTES.HOME} 
-                        element={ <ProtectedRoute> <Appointments /> </ProtectedRoute> } 
-                    />
+                    <Route path={APP_ROUTES.HOME} element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
+                    <Route path={APP_ROUTES.PROFILE} element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                     <Route path={APP_ROUTES.SIGN_IN} element={<Login />} />
                     <Route path={APP_ROUTES.SIGN_UP} element={<Register />} />
                 </Routes>
