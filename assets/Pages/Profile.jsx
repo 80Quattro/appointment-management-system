@@ -8,7 +8,7 @@ import useUserAppointments from '../Hooks/useUserAppointments';
 const Profile = () => {
 
     const {userName} = useContext(UserContext);
-    const [appointments] = useUserAppointments(userName);
+    const [appointments] = useUserAppointments();
 
     return (
         <Row>

@@ -2,14 +2,20 @@ import { useEffect, useState } from "react";
 
 import AppointmentAPI from "../Services/AppointmentsAPI";
 
-const useUserAppointments = (userName) => {
+import { parseFromISOString } from "../Utils/dateTimeHelpers";
+
+const useUserAppointments = () => {
 
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
 
         AppointmentAPI.getUserAppointments().then((data) => {
-            console.log(data);
+            data = data.map((d) => ({
+                id: d.id, 
+                date: parseFromISOString(d.date).toLocaleString(), 
+                status: d.status
+            }));
             setAppointments(data);
         });
 
