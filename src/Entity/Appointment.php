@@ -6,6 +6,7 @@ use App\Repository\AppointmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]
 class Appointment
@@ -13,14 +14,17 @@ class Appointment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('main')]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotBlank(message: "Date should not be blank.")]
+    #[Groups('main')]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 10)]
     #[Assert\Choice(['RESERVED', 'DONE', 'PAID', 'CANCELD'])]
+    #[Groups('main')]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]

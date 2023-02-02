@@ -14,14 +14,12 @@ class UserController extends AbstractController
 
     #[Route('/appointments', name: 'appointments', methods: "GET")]
     public function getAppointments(): Response
-    {
-        $user = $this->getUser();
-        $appointments = $user->getAppointments();
-        //dump($appointments); die;
-        //die;
-        
+    {   
         return $this->json(
-            $appointments
+            $this->getUser()->getAppointments(),
+            Response::HTTP_OK,
+            [],
+            ['groups' => 'main']
         ); 
     }
 }
